@@ -1,0 +1,70 @@
+pipeline {
+    agent any
+    environment {
+        name = 'Manas'
+    }
+    parameters {
+        string(name: 'person', defaultValue: 'Saurav', description: "Who are you?")
+        booleanParam(name: 'isMale', defaultValue: true, description: "")
+        choice(name: 'City', choices: ['Odisha', 'Banglore', 'Pune'], description: "")
+    }
+    stages {
+        stage('Run as Command') {
+            steps {
+                sh '''
+                    ls
+                    date
+                    pwd
+                    cal 2026
+                '''
+            }
+        }
+        stage('Environment Variables') {
+            environment {
+                username = 'Manasdeep'
+            }
+            steps {
+                sh 'echo "${BUILD_ID}"'
+                sh 'echo "${name}"'
+                sh 'echo "${username}"'
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'build'
+            }
+        }
+        stage('Parameters') {
+            steps {
+                sh 'echo "${name}"'
+                sh 'echo "${person}"'
+                sh 'echo "${isMale}"'
+                sh 'echo "${City}"'
+            }
+        }
+        stage('Continue ?') {
+            steps {
+                input message: "Should we continue?", ok: "Yes we Should"
+                echo 'Continuing...'
+            }
+        }
+        stage('Deploy on Prod') {
+            steps {
+                echo 'deploy on prod'
+            }
+        }
+    }
+
+  
+    post {
+        always {
+            echo 'I will always say Hello again!'
+        }
+        failure {
+            echo "Fail"
+        }
+        success {
+            echo "Success"
+        }
+    }
+}   // ← pipeline block ends here AFTER post
